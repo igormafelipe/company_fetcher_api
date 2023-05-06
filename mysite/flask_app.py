@@ -4,12 +4,14 @@ sys.path.append('../')
 sys.path.append('./')
 
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 from filter import get_jobs
 import search_params as sp
 import json
 
 #Starts flask app
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/', methods=['GET'])
 def handle_request():
@@ -32,6 +34,7 @@ def handle_request():
 #
 # Not case sensitive.
 @app.route('/getjobs', methods=['GET'])
+@cross_origin()
 def data():
     location = request.args.get("location")
     keywords_include = request.args.get("keywords_include")

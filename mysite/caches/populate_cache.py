@@ -44,7 +44,7 @@ def fetch_positions(companies: dict, location):
     used = set()
     cja = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
     ip = get('https://api.ipify.org').text
-    for company in tqdm(companies):
+    for company in companies:
         for company_possible_name in companies[company]:
             try:
                result_json = cja.search({

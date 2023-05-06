@@ -10,6 +10,7 @@ sys.path.append('./')
 
 import pandas as pd
 import search_params as sp
+import spacy
 
 # information to be fetched from each job post
 FETCH_KEY = "title"
@@ -27,6 +28,3 @@ def get_jobs(location: str, position_include: list[str], position_exclude: list[
         jobs_position = jobs_position[~jobs_position[FETCH_KEY].str.lower().str.contains(pos_exclude)]
 
     return jobs_position.to_dict(orient='records')
-
-#without senior it does not work, look at it!
-print(get_jobs("ca", ["Software Engineer"], []))

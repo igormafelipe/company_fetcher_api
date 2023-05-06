@@ -48,7 +48,7 @@ def populate_cache(companies: dict, location: str):
     used = set()
     cja = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
     ip = get('https://api.ipify.org').text
-    for company in tqdm(companies):
+    for company in companies:
         for company_possible_name in companies[company]:
             if company_possible_name in ignored_companies:
                 continue
@@ -68,8 +68,6 @@ def populate_cache(companies: dict, location: str):
                 print(f"Nothing found for {company_possible_name}\n")
                 continue
 
-            print(result_json['jobs'])
-            exit()
             for job in result_json['jobs']:
                 job_key = job['title'] + job['date'] + job['company']
                 if (job_key in used or job['company'] == ""):
