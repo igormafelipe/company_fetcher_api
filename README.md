@@ -1,56 +1,74 @@
 # Career Jet Job Search API with Sponsorship Verification
 
-This API is designed to help job seekers find job openings that are sponsored by companies verified by the embassy of the job seeker's country. It uses Career Jet API to find job openings and verifies whether the companies can sponsor by cross-referencing the embassy's list of verified companies.
+This API is designed to help job seekers find job openings that are allowed by country's to sponsor applicants for their positions. It uses Career Jet API to find job openings and verifies whether the companies can sponsor by cross-referencing the embassy's list of verified companies.
 
-API Endpoints
+## API Endpoints
 Search Jobs
-This endpoint returns a list of job openings that are sponsored by companies verified by the embassy of the job seeker's country.
+This endpoint returns a list of job openings that are allowd to sponsor, verified by the embassy of the job seeker's country.
 
-Endpoint URL
-GET /api/search
+### Endpoint URL
+GET http://igormafelipe.pythonanywhere.com/getjobs
 
-Query Parameters
-q (required): The search query string.
-location (required): The location where the job openings should be searched.
-country (required): The country of the job seeker.
-page: The page number to return (default is 1).
-per_page: The number of job openings to return per page (default is 10).
-Example Request
-sql
-Copy code
-GET /api/search?q=software+engineer&location=san+francisco&country=united+states&page=1&per_page=10
-Example Response
-json
-Copy code
-{
-  "success": true,
-  "data": [
-    {
-      "title": "Software Engineer",
-      "company": "Acme Inc.",
-      "location": "San Francisco, CA",
-      "sponsorship": true,
-      "url": "https://example.com/job/123"
-    },
-    {
-      "title": "Backend Engineer",
-      "company": "Beta Corp.",
-      "location": "San Francisco, CA",
-      "sponsorship": true,
-      "url": "https://example.com/job/456"
+### Query Parameters
+location (required): The country code of the job. "ca" = Canada, "ne" = Netherlands
+
+keywords_include (required): Keywords to look for in the job title
+
+keywords_exclude (optional): Keywords that will make a job be excluded from the final list
+
+
+## Example Request with AXIOS
+    await axios(
+      {
+          method: "GET",
+          url: "http://igormafelipe.pythonanywhere.com/getjobs",
+          params: {
+              location: "ca",
+              keywords_include: ["Software Engineer"],
+              keywords_exclude: ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"],
+          },
+          })
+          .then((response) => {
+              const res = response.data;
+              setLoading(false);
+              navigate('results', { state: { data: res } })
+          })
+          .catch((error) => {
+              if (error.response) {
+              console.log(error.response);
+              }
+      });
+
+## Example Response
+    { 
+      "success": true, 
+      "jobs": [
+                { 
+                  "locations": "Toronto, ON", 
+                  "date": "Wed, 26 Apr 2023 07:57:22 GMT", 
+                  "title": "Software Engineering II", 
+                  "company": "Big Viking Games", 
+                  "url": "https://URL_TO_JOB"
+                },
+                { 
+                  "locations": "Toronto, ON", 
+                  "date": "Wed, 26 Apr 2023 07:57:22 GMT", 
+                  "title": "Software Engineering II", 
+                  "company": "Big Viking Games", 
+                  "url": "https://URL_TO_JOB"
+                },
+              ]
     }
-  ]
-}
-Authentication
+
+### Authentication
 This API does not require authentication.
 
-Rate Limiting
+### Rate Limiting
 This API is rate-limited to 100 requests per hour per IP address.
 
-Data Sources
+### Data Sources
 This API uses the following data sources:
 
 Career Jet API: https://www.careerjet.com/partners/api/
-Embassy of the job seeker's country: https://www.example.com/embassy/
-Support
-If you have any questions or issues, please contact us at support@example.com.
+
+Embassy of the job seeker's country: [canada](https://www.canada.ca/en.html), [netherlands](https://www.netherlandsworldwide.nl)
