@@ -1,28 +1,56 @@
-Company Filter: A certified way of applying for jobs that offer sponsorship.
+# Career Jet Job Search API with Sponsorship Verification
 
-Coded by: Igor Mafra Felipe, github: https://github.com/igormafelipe
+This API is designed to help job seekers find job openings that are sponsored by companies verified by the embassy of the job seeker's country. It uses Career Jet API to find job openings and verifies whether the companies can sponsor by cross-referencing the embassy's list of verified companies.
 
-Description: Given a country and a list o keywords, return jobs from companies
-             that are listed on that country's embassy website as holders of
-             the right to sponsor.
+API Endpoints
+Search Jobs
+This endpoint returns a list of job openings that are sponsored by companies verified by the embassy of the job seeker's country.
 
-How to use: Send a GET request to igormafelipe.pythonanywhere.com/getjobs with
-            the following payload:
-            {
-                'location' : '',
-                'keywords_include' : [],
-                'keywords_exclude' : [],
-            }
+Endpoint URL
+GET /api/search
 
-            location options:
-                "ca" = Canada
-                "ne" = Netherlands
-                more coming soon.
+Query Parameters
+q (required): The search query string.
+location (required): The location where the job openings should be searched.
+country (required): The country of the job seeker.
+page: The page number to return (default is 1).
+per_page: The number of job openings to return per page (default is 10).
+Example Request
+sql
+Copy code
+GET /api/search?q=software+engineer&location=san+francisco&country=united+states&page=1&per_page=10
+Example Response
+json
+Copy code
+{
+  "success": true,
+  "data": [
+    {
+      "title": "Software Engineer",
+      "company": "Acme Inc.",
+      "location": "San Francisco, CA",
+      "sponsorship": true,
+      "url": "https://example.com/job/123"
+    },
+    {
+      "title": "Backend Engineer",
+      "company": "Beta Corp.",
+      "location": "San Francisco, CA",
+      "sponsorship": true,
+      "url": "https://example.com/job/456"
+    }
+  ]
+}
+Authentication
+This API does not require authentication.
 
-            keywords_include: An array of keywords that must be present in the
-                              job title. Not case sensitive.
-                              Example: ["software", "programming", "data"]
+Rate Limiting
+This API is rate-limited to 100 requests per hour per IP address.
 
-            keywords_exclude: An array of keywords that, if present in the title,
-                              exclude that job from the items to be returned.
-                              Example: ["Senior", "manager", "Staff"]
+Data Sources
+This API uses the following data sources:
+
+Career Jet API: https://www.careerjet.com/partners/api/
+Embassy of the job seeker's country: https://www.example.com/embassy/
+Support
+If you have any questions or issues, please contact us at support@example.com.
