@@ -11,10 +11,14 @@ GET http://igormafelipe.pythonanywhere.com/getjobs
 
 ### Query Parameters
     {
-        location (required): The country code of the job. "ca" = Canada, "ne" = Netherlands
-        keywords_include (required): Keywords to look for in the job title
-        keywords_exclude (optional): Keywords that will make a job be excluded from the final list
+        location: ["ca" | "ne"]
+        keywords_include: ["Software Engineer"]
+        keywords_exclude: ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"],
     };
+
+"ca" : "Canada"
+
+"ne" : "Netherlands"
 
 ## Example Request
 
