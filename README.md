@@ -10,11 +10,11 @@ This endpoint returns a list of job openings that are allowd to sponsor, verifie
 GET http://igormafelipe.pythonanywhere.com/getjobs
 
 ### Query Parameters
-location (required): The country code of the job. "ca" = Canada, "ne" = Netherlands
-
-keywords_include (required): Keywords to look for in the job title
-
-keywords_exclude (optional): Keywords that will make a job be excluded from the final list
+    {
+        location (required): The country code of the job. "ca" = Canada, "ne" = Netherlands
+        keywords_include (required): Keywords to look for in the job title
+        keywords_exclude (optional): Keywords that will make a job be excluded from the final list
+    };
 
 ## Example Request
 
