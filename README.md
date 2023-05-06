@@ -22,7 +22,7 @@ GET http://igormafelipe.pythonanywhere.com/getjobs
 
 ## Example Request
 
-http://igormafelipe.pythonanywhere.com/getjobs?location=ca&keywords_include=Software Engineer
+[http://igormafelipe.pythonanywhere.com/getjobs?location=ca&keywords_include=Software Engineer](http://igormafelipe.pythonanywhere.com/getjobs?location=ca&keywords_include=Software Engineer)
 
 ## Example Request with AXIOS
     await axios(
