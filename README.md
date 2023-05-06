@@ -16,6 +16,9 @@ keywords_include (required): Keywords to look for in the job title
 
 keywords_exclude (optional): Keywords that will make a job be excluded from the final list
 
+## Example Request
+
+http://igormafelipe.pythonanywhere.com/getjobs?location=ca&keywords_include=Software Engineer
 
 ## Example Request with AXIOS
     await axios(
