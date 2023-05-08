@@ -75,3 +75,9 @@ This API uses the following data sources:
 Career Jet API: https://www.careerjet.com/partners/api/
 
 Embassy of the job seeker's country: [canada](https://www.canada.ca/en.html), [netherlands](https://www.netherlandsworldwide.nl)
+
+## Local Setup
+coming soon...
+
+## To Do
+Soon, a token system will be added for authentication, a better input filtering with Elastic Search, and more locations will be added.
