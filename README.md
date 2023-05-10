@@ -77,7 +77,7 @@ Career Jet API: https://www.careerjet.com/partners/api/
 Embassy of the job seeker's country: [canada](https://www.canada.ca/en.html), [netherlands](https://www.netherlandsworldwide.nl)
 
 ## Local Setup
-coming soon...
+    1. Update AFF_KEY on search_params.py with your career jet api affiliate key
 
 ## To Do
 Soon, a token system will be added for authentication, a better input filtering with Elastic Search, and more locations will be added.
