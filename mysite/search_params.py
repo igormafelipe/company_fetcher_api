@@ -2,6 +2,8 @@
 # Coded by Igor M. Felipe
 # Last edited: 12/5/2022
 
+AFF_KEY = ""
+
 VALID_LOCATIONS = set(["ca", "ne"])
 LOCATION = {"ca" : "en_CA",
             "ne" : "nl_NL"}
