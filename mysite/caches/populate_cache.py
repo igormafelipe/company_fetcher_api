@@ -49,7 +49,7 @@ def fetch_positions(companies: dict, location):
             try:
                result_json = cja.search({
                             'keywords'    : f"{company_possible_name}",
-                            'affid'       : '069f8b7ca985d7c45f58ba3cfdf773da',
+                            'affid'       : sp.AFF_KEY,
                             'user_ip'     : f"{ip}",
                             'url'         : 'https://igormafelipe.pythonanywhere.com',
                             'user_agent'  : 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0'
