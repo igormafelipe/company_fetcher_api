@@ -1,26 +1,27 @@
 # Career Jet Job Search API with Sponsorship Verification
 
-This API is designed to help job seekers find job openings that are allowed by country's to sponsor applicants for their positions. It uses Career Jet API to find job openings and verifies whether the companies can sponsor by cross-referencing the embassy's list of verified companies.
+This API aims to assist job seekers in identifying job opportunities where companies are authorized to sponsor applicants for their roles within a specific country. It utilizes the Career Jet API to locate job openings and validates companies' sponsorship eligibility by cross-referencing with the embassy's verified list of sponsoring entities.
 
 ## API Endpoints
-Search Jobs
-This endpoint returns a list of job openings that are allowd to sponsor, verified by the embassy of the job seeker's country.
 
-### Endpoint URL
-GET http://igormafelipe.pythonanywhere.com/getjobs
+`GET http://igormafelipe.pythonanywhere.com/getjobs`
+This endpoint returns a list of job openings that are allowed to sponsor, verified by the embassy of the job seeker's country.
 
 ### Query Parameters
-    {
-        location: ["ca" | "ne"]
-        keywords_include: ["Software Engineer"]
-        keywords_exclude: ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"],
-    };
 
-"ca" : "Canada"
+`
+{
+    "location": ["ca" | "ne"],
+    "keywords_include": ["Software Engineer"],
+    "keywords_exclude": ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"]
+}`
 
-"ne" : "Netherlands"
 
-## Example Request with AXIOS
+Explanation:
+- `"ca"` represents Canada.
+- `"ne"` represents the Netherlands.
+
+## Sample Request with AXIOS
     await axios(
       {
           method: "GET",
@@ -42,7 +43,7 @@ GET http://igormafelipe.pythonanywhere.com/getjobs
               }
       });
 
-## Example Response
+## Sample Response
     { 
       "success": true, 
       "jobs": [
@@ -62,22 +63,25 @@ GET http://igormafelipe.pythonanywhere.com/getjobs
                 },
               ]
     }
-
+    
 ### Authentication
 This API does not require authentication.
 
 ### Rate Limiting
-This API is rate-limited to 100 requests per hour per IP address.
+This API is rate-limited to 10 requests per minute.
 
 ### Data Sources
-This API uses the following data sources:
+This API utilizes the following data sources:
 
-Career Jet API: https://www.careerjet.com/partners/api/
-
-Embassy of the job seeker's country: [canada](https://www.canada.ca/en.html), [netherlands](https://www.netherlandsworldwide.nl)
+- Career Jet API: [Career Jet API](https://www.careerjet.com/partners/api/)
+- Embassy of the job seeker's country: [Canada](https://www.canada.ca/en.html), [Netherlands](https://www.netherlandsworldwide.nl)
 
 ## Local Setup
-    1. Update AFF_KEY on search_params.py with your career jet api affiliate key
+1. Update `AFF_KEY` on `search_params.py` with your Career Jet API affiliate key.
 
 ## To Do
-Soon, a token system will be added for authentication, a better input filtering with Elastic Search, and more locations will be added.
+Plans:
+- Implement a token system for authentication.
+- Enhance input filtering using Elastic Search.
+- Expansion of available locations.
+
