@@ -80,6 +80,10 @@ This API utilizes the following data sources:
 
 ## Local Setup
 1. Update `AFF_KEY` on `search_params.py` with your Career Jet API affiliate key.
+2. Update the variable `DATA_ABSOLUTE_PATH` in `search_params.py` to the absolute path of the data folder
+3. Run the general_tests.py to ensure flask server works
+4. Initialize the flask server by running `python3 flask_app.py`
+5. Update the cache in your server by running the populate function in populate_cache.py, or the update function in update_cache.py. The difference is, update takes into account the companies listed in `ignore_list` from the previous populate run. These companies had no job listings, are are ignored until we run populate again.   
 
 ## To Do
 Plans:
