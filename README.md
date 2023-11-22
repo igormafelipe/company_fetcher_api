@@ -4,24 +4,25 @@ This API aims to assist job seekers in identifying job opportunities where compa
 
 ## API Endpoints
 
-`GET http://igormafelipe.pythonanywhere.com/getjobs`
+```GET http://igormafelipe.pythonanywhere.com/getjobs```<br/><br/>
 This endpoint returns a list of job openings that are allowed to sponsor, verified by the embassy of the job seeker's country.
 
 ### Query Parameters
 
-`
+```
 {
-    "location": ["ca" | "ne"],
-    "keywords_include": ["Software Engineer"],
-    "keywords_exclude": ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"]
-}`
-
+     "location": ["ca" | "ne"],
+     "keywords_include": ["Software Engineer"],
+     "keywords_exclude": ["Senior", "Junior", "Manager", "Associate", "Contract", "Part Time"]
+}
+```
 
 Explanation:
 - `"ca"` represents Canada.
 - `"ne"` represents the Netherlands.
 
 ## Sample Request with AXIOS
+```
     await axios(
       {
           method: "GET",
@@ -42,6 +43,7 @@ Explanation:
               console.log(error.response);
               }
       });
+```
 
 ## Sample Response
     { 
