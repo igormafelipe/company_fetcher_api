@@ -1,7 +1,6 @@
 import unittest
 import sys
 import requests
-import json
 import subprocess
 import time
 
