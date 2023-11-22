@@ -1,30 +1,24 @@
 # !/usr/bin/env python3
 # Coded by Igor M. Felipe
-# Last edited: 4/14/2022
-# Purpose: Filters the jobs from a certain location based on position.
-#          Can exlude jobs with certain keywords on their title, like Senior, etc.
-#          Can get jobs with ONLY certain keywords on their title
-import sys
-sys.path.append('../')
-sys.path.append('./')
+# Last edited: 11/22/2023
 
 import pandas as pd
-import search_params as sp
-import spacy
+from typing import List
+from search_params import FILTERED_PATH
 
-# information to be fetched from each job post
+# Field used to fetch jobs
 FETCH_KEY = "title"
 
-# Fetches jobs that contain position_include in their title and do not contain
-# position_exclude. Location determines which country is fetched.
-def get_jobs(location: str, position_include: list[str], position_exclude: list[str]):
-    pos_include = "|".join([x.lower() for x in position_include])
-    pos_exclude = "|".join([x.lower() for x in position_exclude])
+def get_jobs(location: str, positions_to_include: List[str], positions_to_exclude: List[str]):
+    include_criteria = "|".join([position.lower() for position in positions_to_include])
+    exclude_criteria = "|".join([position.lower() for position in positions_to_exclude])
 
-    jobs = pd.read_csv(sp.FILTERED_PATH[location], index_col=[0])
+    jobs = pd.read_csv(FILTERED_PATH[location], index_col=[0])
 
-    jobs_position = jobs[jobs[FETCH_KEY].str.lower().str.contains(pos_include)]
-    if len(position_exclude) > 0:
-        jobs_position = jobs_position[~jobs_position[FETCH_KEY].str.lower().str.contains(pos_exclude)]
+    jobs_with_included_positions = jobs[jobs[FETCH_KEY].str.lower().str.contains(include_criteria)]
 
-    return jobs_position.to_dict(orient='records')
+    # Exclude jobs that contain positions to exclude
+    if positions_to_exclude:
+        jobs_with_included_positions = jobs_with_included_positions[~jobs_with_included_positions[FETCH_KEY].str.lower().str.contains(exclude_criteria)]
+
+    return jobs_with_included_positions.to_dict(orient='records')

@@ -1,9 +1,11 @@
 # !/usr/bin/env python3
 # Coded by Igor M. Felipe
-# Last edited: 4/14/2022
+# Last edited: 11/22/2023
+
 # Purpose: A script that is run once every 10 days, updating the list of companies to
 #          be ignored when fetching information and updating the current job listing.
 #          A company is to be ignored if it has no jobs listed.
+
 import sys
 sys.path.append('../')
 sys.path.append('./')
@@ -20,71 +22,68 @@ from requests import get
 # >> DO NOT CHANGE <<
 FETCH_KEYS = ["locations", "date", "title", "company", "url"]
 
-# Controls max range of exclusion of experience. If a position requests more than
-# EXPERIENCE_EXCLUSION years of experience, it will not be filtred out regardless
-# of range.
+# Excludes jobs that require more than EXPERIENCE_EXCLUSION years of experience
 EXPERIENCE_EXCLUSION = 15
 
-# Outputs the given pd object to excel
 def output_csv(pd: object, out_file):
     if os.path.exists(out_file):
         os.remove(out_file)
     pd.to_csv(out_file)
 
-# Gets the desired jobs from the career jet website based on location and company
-# Parameters:
-#         companies: List of company names to be looked up
-#         location: Which country we are looking for
-# Returns:
-#         all_jobs: Dictionary of company jobs found.
-#         to_ignore: Set of company names that had no job listings to them.
 def fetch_positions(companies: dict, location):
     all_jobs = {}
-    to_ignore = set([])
+    search_fails = set([])
     used = set()
-    cja = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
+    career_jet_api = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
     ip = get('https://api.ipify.org').text
     for company in companies:
         for company_possible_name in companies[company]:
             try:
-               result_json = cja.search({
-                            'keywords'    : f"{company_possible_name}",
-                            'affid'       : sp.AFF_KEY,
-                            'user_ip'     : f"{ip}",
-                            'url'         : 'https://igormafelipe.pythonanywhere.com',
-                            'user_agent'  : 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0'
-                        });
+               career_jet_jobs = career_jet_api.search({
+                                'keywords'    : f"{company_possible_name}",
+                                'affid'       : sp.AFF_KEY,
+                                'user_ip'     : f"{ip}",
+                                'url'         : 'https://igormafelipe.pythonanywhere.com',
+                                'user_agent'  : 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0'
+                            }).json()
+               
             except Exception as e:
-                to_ignore.add(company_possible_name)
-                print(f"whooops, the search failed!\n{e} {company_possible_name}\n")
+                search_fails.add(company_possible_name)
+                print(f"The search failed!\n{e} {company_possible_name}\n")
 
-            if 'jobs' not in result_json:
-                to_ignore.add(company_possible_name)
+            if 'jobs' not in career_jet_jobs:
+                search_fails.add(company_possible_name)
                 continue
 
-            for job in result_json['jobs']:
+            # Process found jobs
+            for job in career_jet_jobs['jobs']:
                 job_key = job['title'] + job['date'] + job['company']
+                
                 if (job_key in used or job['company'] == ""):
                     continue
-
+                
+                # Extract job details using FETCH_KEYS
                 for key in FETCH_KEYS:
                     if key not in all_jobs:
                         all_jobs[key] = []
                     all_jobs[key].append(job[key])
+                
                 used.add(job_key)
-    return all_jobs, to_ignore
+                
+    return all_jobs, search_fails
 
-# Gets the list of job listings for a specified country's list.
-# Populates the ignore list, for companies that had no jobs listed.
-# Takes about 1 hour to run.
+# Populates the cvs files with the information of the companies and jobs
+# Populates ignore_out_file with the companies that have no jobs listed
 def populate(location: str):
     try:
         possible_companies: dict = get_company_names([], location)
         jobs, to_ignore = fetch_positions(possible_companies, location)
+        
         ignore_out_file = sp.IGNORE_FILE_PATH[location]
         companies_out_file = sp.FILTERED_FILE_NAME[location]
+        
         output_csv(pd.DataFrame(to_ignore), ignore_out_file)
         output_csv(pd.DataFrame.from_dict(jobs), companies_out_file)
     except Exception as e:
-        print(f"Whoops, something went wrong\n{e}\nAborting...")
+        print(f"Something went wrong\n{e}\nAborting...")
     return []

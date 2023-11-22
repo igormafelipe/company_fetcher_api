@@ -1,6 +1,7 @@
 # !/usr/bin/env python3
 # Coded by Igor M. Felipe
-# Last edited: 4/16/2022
+# Last edited: 11/22/2023
+
 # Purpose: A script run daily. Controls which scrips will be run to maintain
 #          the jobs cache.
 
@@ -10,7 +11,7 @@ sys.path.append('../')
 sys.path.append('./')
 
 FULL_FETCH_DAY = 0 #Monday
-UPDATE_DAYS = [1, 2, 4, 6] #Update more during week.
+UPDATE_DAYS = [1, 2, 4, 6] #Tuesday, Wednesday, Friday, Sunday
 
 today = datetime.date.today()
 weekday = today.weekday()

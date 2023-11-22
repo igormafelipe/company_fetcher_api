@@ -19,34 +19,26 @@ from requests import get
 # >> DO NOT CHANGE <<
 FETCH_KEYS = ["locations", "date", "title", "company", "url"]
 
-# Controls max range of exclusion of experience. If a position requests more than
-# EXPERIENCE_EXCLUSION years of experience, it will not be filtred out regardless
-# of range.
+# Excludes jobs that require more than EXPERIENCE_EXCLUSION years of experience
 EXPERIENCE_EXCLUSION = 15
 
-# Outputs the given pd object to excel
 def output_csv(pd: object, out_file):
     if os.path.exists(out_file):
         os.remove(out_file)
     pd.to_csv(out_file)
 
-# Gets list of ignored companies from .csv file
+# Ignored companies are skipped when fetching jobs, as they have no jobs listed.
+# These are updated every week based on populate_cache.
 def get_ignored_companies(location):
     to_ignore = pd.read_csv(sp.IGNORE_FILE_PATH[location]).values.tolist()
     to_ignore = [company for num, company in to_ignore]
     return to_ignore
 
-# Gets the desired jobs from the career jet website based on location and company
-# Parameters:
-#         companies: List of company names to be looked up
-#         location: Which country we are looking for
-# Returns:
-#         all_jobs: Dictionary of company jobs found.
-def populate_cache(companies: dict, location: str):
+def update_cache(companies: dict, location: str):
     all_jobs = {}
     ignored_companies = set(get_ignored_companies(location))
     used = set()
-    cja = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
+    career_jet_api = careerjet_api_client.CareerjetAPIClient(sp.LOCATION[location]);
     ip = get('https://api.ipify.org').text
     for company in companies:
         for company_possible_name in companies[company]:
@@ -54,41 +46,44 @@ def populate_cache(companies: dict, location: str):
                 continue
 
             try:
-               result_json = cja.search({
+               result_json = career_jet_api.search({
                             'keywords'    : f"{company_possible_name}",
                             'affid'       : sp.AFF_KEY,
                             'user_ip'     : f"{ip}",
                             'url'         : 'https://igormafelipe.pythonanywhere.com',
                             'user_agent'  : 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0'
-                        });
+                        }).json()
             except Exception as e:
-                print(f"whooops, the search failed!\n{e} {company_possible_name}\n")
+                print(f"The search failed!\n{e} {company_possible_name}\n")
 
             if 'jobs' not in result_json:
                 print(f"Nothing found for {company_possible_name}\n")
                 continue
-
+            
+            # Process found jobs
             for job in result_json['jobs']:
                 job_key = job['title'] + job['date'] + job['company']
+                
                 if (job_key in used or job['company'] == ""):
                     continue
 
+                # Extract job details using FETCH_KEYS
                 for key in FETCH_KEYS:
                     if key not in all_jobs:
                         all_jobs[key] = []
                     all_jobs[key].append(job[key])
                 used.add(job_key)
+                
     return all_jobs
 
-# Gets the list of job listings for a specified country's list.
-# Populates the ignore list, for companies that had no jobs listed.
-# Takes about 30 minutes to to run.
+# Updates the cvs file with the information of the companies and jobs
 def update(location: str):
     try:
         possible_companies: dict = get_company_names([], location)
-        jobs = populate_cache(possible_companies, location)
+        jobs = update_cache(possible_companies, location)
+        
         companies_out_file = sp.FILTERED_FILE_NAME[location]
         output_csv(pd.DataFrame.from_dict(jobs), companies_out_file)
     except Exception as e:
-        print(f"Whoops, something went wrong\n{e}\nAborting...")
+        print(f"Something went wrong\n{e}\nAborting...")
     return []

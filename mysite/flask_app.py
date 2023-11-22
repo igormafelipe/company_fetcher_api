@@ -1,15 +1,13 @@
-# A very simple Flask Hello World app for you to get started with...
-import sys
-sys.path.append('../')
-sys.path.append('./')
+# !/usr/bin/env python3
+# Coded by Igor M. Felipe
+# Last edited: 11/22/2023
 
-from flask import Flask, request
+from flask import Flask, request, json
 from flask_cors import CORS, cross_origin
 from filter import get_jobs
 import search_params as sp
-import json
 
-#Starts flask app
+# Start Flask app
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -17,30 +15,17 @@ cors = CORS(app)
 def handle_request():
     return json.dumps("To fetch, request from /getjobs")
 
-
-# Expects the following payload:
-#   Mandatory:
-#       location: The country code of the job.
-#       keywords_include: Keywords looked for. If Software Engineer, will find jobs with that in the title
-#   Optional:
-#       keywords_exclude: Keywords to be filtered out. Can be level of seniority, type of job, etc.
-#
-#   Example payload:
-#   data: {
-#       location: "ca",
-#       keywords_include: "Software Engineering,Software,Programmer,Developer",
-#       keywords_exclude: "Senior,Staff,Lead,III,manager"
-#   }
-#
-# Not case sensitive.
 @app.route('/getjobs', methods=['GET'])
 @cross_origin()
-def data():
+def fetch_jobs():
+    # Extract parameters from the request
     location = request.args.get("location")
     keywords_include = request.args.get("keywords_include")
     keywords_exclude = request.args.get("keywords_exclude")
+
+    # Validate required parameters
     if location is None:
-        return 'Bad request! location not found', 400
+        return 'Bad request! Location not found', 400
 
     if location not in sp.VALID_LOCATIONS:
         return 'Invalid location!', 400
@@ -48,9 +33,11 @@ def data():
     if keywords_include is None:
         return 'Bad request! keywords_include not found', 400
 
-    keywords_include = [k.strip() for k in keywords_include.split(',') if k.strip()]
-    keywords_exclude = [] if keywords_exclude == None else keywords_exclude.split(',')
+    # Process keywords and split them into lists
+    keywords_include = [keyword.strip() for keyword in keywords_include.split(',') if keyword.strip()]
+    keywords_exclude = [] if keywords_exclude is None else keywords_exclude.split(',')
 
+    # Fetch jobs based on provided parameters
     jobs = get_jobs(location, keywords_include, keywords_exclude)
 
     return json.dumps(jobs)
